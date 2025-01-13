@@ -1,0 +1,28 @@
+services:
+  redis:
+    image: redis:7.4-alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - backend
+    env_file:
+      - .env
+  goapi:
+    image: golang:alpine3.21
+    command: sh -c "go run main.go"
+    working_dir: /app
+    volumes:
+      - .:/app
+    ports:
+      - "8080:8080"
+    depends_on:
+      - redis
+    networks:
+      - backend
+    env_file:
+      - .env
+
+networks:
+  backend:
+    driver: bridge
+  
